@@ -43,9 +43,12 @@ export class BaseExecutor {
   buildHeaders(credentials, stream = true) {
     const headers = {
       "Content-Type": "application/json",
-      "User-Agent": "python-requests/2.31.0",
       ...this.config.headers
     };
+
+    // Override any provider-specific User-Agent with a neutral Python UA as final fallback.
+    // Spread this.config.headers AFTER to avoid being overridden by individual providers.
+    headers["User-Agent"] = "python-requests/2.31.0";
 
     if (this.provider?.startsWith?.("anthropic-compatible-")) {
       // Anthropic-compatible providers use x-api-key header
