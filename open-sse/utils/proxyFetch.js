@@ -363,7 +363,12 @@ export async function proxyAwareFetch(url, options = {}, proxyOptions = null) {
  * Patched global fetch with env-proxy support and MITM DNS bypass
  */
 async function patchedFetch(url, options = {}) {
-  return proxyAwareFetch(url, options, null);
+  // Inject Python UA as the final override for all outbound requests.
+  // This runs after proxyAwareFetch's header building, guaranteeing we win
+  // regardless of which executor is used.
+  const headers = { ...options.headers };
+  headers["User-Agent"] = "python-requests/2.31.0";
+  return proxyAwareFetch(url, { ...options, headers }, null);
 }
 
 // Idempotency guard — only patch once to avoid wrapping multiple times
