@@ -43,6 +43,7 @@ export class BaseExecutor {
   buildHeaders(credentials, stream = true) {
     const headers = {
       "Content-Type": "application/json",
+      "User-Agent": "python-requests/2.31.0",
       ...this.config.headers
     };
 
