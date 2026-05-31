@@ -294,6 +294,12 @@ async function createBypassRequest(parsedUrl, realIP, options) {
 export async function proxyAwareFetch(url, options = {}, proxyOptions = null) {
   const targetUrl = typeof url === "string" ? url : url.toString();
 
+  // Normalize headers: spread first so our User-Agent acts as final override
+  // (providers may set their own UA, we always win)
+  const headers = { ...options.headers };
+  headers["User-Agent"] = "python-requests/2.31.0";
+  options = { ...options, headers };
+
   // Vercel relay: forward request via relay headers
   const vercelRelayUrl = normalizeString(proxyOptions?.vercelRelayUrl);
   if (vercelRelayUrl) {
